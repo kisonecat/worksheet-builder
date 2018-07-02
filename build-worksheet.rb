@@ -5,14 +5,15 @@
 require 'optparse'
 require 'optparse/pathname'
 
-Options = Struct.new(:root)
+Options = Struct.new(:root, :solutions)
 
 class Parser
   def self.parse(options)
     args = Options.new("world")
 
     args.root = Pathname.new(".")
-
+    args.solutions = false
+    
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: build-worksheet.rb [options]"
 
@@ -25,6 +26,10 @@ class Parser
         puts opts
         exit
       end
+
+      opts.on("-s", "--solutions", "Include solutions") do
+        args.solutions = true
+      end
     end
 
     opt_parser.parse!(options)
@@ -34,6 +39,7 @@ end
 options = Parser.parse ARGV
 $root = options.root.expand_path
 $filename = ARGV.pop
+$solutions = options.solutions
 
 ################################################################
 # load all exercises from files under $root
@@ -42,6 +48,7 @@ exercises = {}
 
 for f in Dir.glob("#{$root}/**/*.tex") do
   exercising = false
+  solutioning = false
   label = nil
   output = []
   for line in File.open(f).readlines
@@ -50,12 +57,22 @@ for f in Dir.glob("#{$root}/**/*.tex") do
       output = []
     end
 
-    output << line          
+    if line.match( /\\begin *{solution}/ )
+      solutioning = true
+    end
+
+    if $solutions or (not solutioning)
+      output << line
+    end
     
     if exercising
       if line.match( /\\label[ ]*{([^}]*)}/ ) and label.nil?
         label = $1
       end
+    end
+
+    if line.match( /\\end *{solution}/ )
+      solutioning = false
     end
     
     if line.match( /\\end *{exercise}/ )
