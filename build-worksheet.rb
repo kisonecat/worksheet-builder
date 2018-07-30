@@ -5,7 +5,7 @@
 require 'optparse'
 require 'optparse/pathname'
 
-Options = Struct.new(:root, :solutions)
+Options = Struct.new(:root, :solutions, :outputFilename)
 
 class Parser
   def self.parse(options)
@@ -13,6 +13,7 @@ class Parser
 
     args.root = Pathname.new(".")
     args.solutions = false
+    args.outputFilename = nil
     
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: build-worksheet.rb [options]"
@@ -30,6 +31,10 @@ class Parser
       opts.on("-s", "--solutions", "Include solutions") do
         args.solutions = true
       end
+
+      opts.on("-oFILE", "--output=FILE", "Save output to file") do |filename|
+        args.outputFilename = filename
+      end      
     end
 
     opt_parser.parse!(options)
@@ -40,6 +45,7 @@ options = Parser.parse ARGV
 $root = options.root.expand_path
 $filename = ARGV.pop
 $solutions = options.solutions
+$outputFilename = options.outputFilename
 
 ################################################################
 # load all exercises from files under $root
@@ -85,21 +91,28 @@ end
 
 ################################################################
 # filter the latex file and run pdflatex
+
 jobname = Pathname.new($filename).basename('.tex')
+output = nil
+if $outputFilename
+  output = File.open($outputFilename, "w")
+else
+  output = IO.popen("pdflatex --jobname=#{jobname}", "r+")
+end
 
-IO.popen("pdflatex --jobname=#{jobname}", "r+") do |pdflatex|
-  for line in File.open($filename).readlines
-    line.gsub!( /%.*/, '' )
-    
-    if line.match(/\\exercise{([^}]+)}/)
-      label = $1
-      line = exercises[label]
-    end
-    pdflatex.puts line
-    #puts line
+for line in File.open($filename).readlines
+  line.gsub!( /%.*/, '' )
+  
+  if line.match(/\\exercise{([^}]+)}/)
+    label = $1
+    line = exercises[label]
   end
+  output.puts line
+end
 
-  pdflatex.each do |output|
-    puts output
+unless $outputFilename
+  output.each do |line|
+    puts line
   end
 end
+
