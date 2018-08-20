@@ -140,7 +140,7 @@ end
 
 flavors = []
 for line in File.open($filename).readlines
-  line.gsub!( /%.*/, '' )
+  # line.gsub!( /%.*/, '' )
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
