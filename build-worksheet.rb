@@ -5,7 +5,7 @@
 require 'optparse'
 require 'optparse/pathname'
 
-Options = Struct.new(:root, :solutions, :outputFilename)
+Options = Struct.new(:root, :solutions, :flavor, :outputFilename)
 
 class Parser
   def self.parse(options)
@@ -32,6 +32,10 @@ class Parser
         args.solutions = true
       end
 
+      opts.on("-f", "--flavor", "Include flavor text") do
+        args.flavor = true
+      end      
+
       opts.on("-oFILE", "--output=FILE", "Save output to file") do |filename|
         args.outputFilename = filename
       end      
@@ -45,24 +49,43 @@ options = Parser.parse ARGV
 $root = options.root.expand_path
 $filename = ARGV.pop
 $solutions = options.solutions
+$flavor = options.flavor
 $outputFilename = options.outputFilename
 
 ################################################################
 # load all exercises from files under $root
 
 exercises = {}
+flavor = {}
 
 for f in Dir.glob("#{$root}/**/*.tex") do
-  exercising = false
+  depth = 0
   solutioning = false
   label = nil
   output = []
+  
+  paragraph = []
+  restart = false
+  
   for line in File.open(f).readlines
+    if line.match( /^[ ]*$/ )
+      restart = true      
+    end
+    
     if line.match( /\\begin *{exercise}/ )
-      exercising = true
+      depth = depth + 1
       output = []
     end
 
+    if depth == 0 and line.match( /[A-z]/ )
+      if restart
+        paragraph = []
+        restart = false
+      end
+      
+      paragraph << line
+    end
+    
     if line.match( /\\begin *{solution}/ )
       solutioning = true
     end
@@ -71,7 +94,7 @@ for f in Dir.glob("#{$root}/**/*.tex") do
       output << line
     end
     
-    if exercising
+    if depth > 0
       if line.match( /\\label[ ]*{([^}]*)}/ ) and label.nil?
         label = $1
       end
@@ -82,9 +105,12 @@ for f in Dir.glob("#{$root}/**/*.tex") do
     end
     
     if line.match( /\\end *{exercise}/ )
-      exercising = false
-      exercises[label] = output.join("")        
-      label = nil
+      depth = depth - 1
+      if depth == 0
+        exercises[label] = output.join("")
+        flavor[label] = paragraph.join("")
+        label = nil
+      end
     end
   end
 end
@@ -100,12 +126,19 @@ else
   output = IO.popen("pdflatex --jobname=#{jobname}", "r+")
 end
 
+flavors = []
 for line in File.open($filename).readlines
   line.gsub!( /%.*/, '' )
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
-    line = exercises[label]
+    line = ""
+    if $flavor and not flavors.include?( flavor[label] )
+      line = flavor[label] + "\n"
+      flavors << flavor[label]
+    end
+    line = line + exercises[label]
+    #line = exercises[label]
   end
   output.puts line
 end
