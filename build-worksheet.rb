@@ -57,6 +57,18 @@ $outputFilename = options.outputFilename
 
 exercises = {}
 flavor = {}
+page_numbers = {}
+exercise_numbers = {}
+
+
+for f in Dir.glob("#{$root}/**/*.aux") do
+  for line in File.open(f).readlines
+    if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}/ )
+      page_numbers[$1] = $3
+      exercise_numbers[$1] = $2
+    end
+  end
+end
 
 for f in Dir.glob("#{$root}/**/*.tex") do
   depth = 0
@@ -134,11 +146,11 @@ for line in File.open($filename).readlines
     label = $1
     line = ""
     if $flavor and not flavors.include?( flavor[label] )
-      line = flavor[label] + "\n"
+      line = line + (flavor[label].gsub(/\\ref{([^}]+)}/) { |label| exercise_numbers[Regexp.last_match[1]] }) + "\n"
       flavors << flavor[label]
     end
+    line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{page_numbers[label]}}"
     line = line + exercises[label]
-    #line = exercises[label]
   end
   output.puts line
 end
