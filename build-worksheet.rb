@@ -59,13 +59,16 @@ exercises = {}
 flavor = {}
 page_numbers = {}
 exercise_numbers = {}
-
+references = {}
 
 for f in Dir.glob("#{$root}/**/*.aux") do
   for line in File.open(f).readlines
     if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}/ )
       page_numbers[$1] = $3
       exercise_numbers[$1] = $2
+    end
+    if line.match( /newlabel{([^}]*)}{({[0-9.]*}{[0-9.]*})/ )
+      references[$1] = "{#{$2}}"
     end
   end
 end
@@ -138,21 +141,53 @@ else
   output = IO.popen("pdflatex --jobname=#{jobname}", "r+")
 end
 
+$used_references = []
+
+def find_references(text)
+  text.scan(/\\ref{([^}]*)}/) { |r|
+    r = r[0]
+    $used_references << r unless $used_references.include?(r)
+  }
+  text.scan(/\\eqref{([^}]*)}/) { |r|
+    r = r[0]    
+    $used_references << r unless $used_references.include?(r)
+  }  
+end
+
+# Find references
+for line in File.open($filename).readlines
+  if line.match(/\\exercise{([^}]+)}/)
+    label = $1
+    find_references(flavor[label])
+  end
+  find_references(exercises[label])
+end
+
 flavors = []
 for line in File.open($filename).readlines
   # line.gsub!( /%.*/, '' )
+
+  if line.match(/\\begin{document}/)
+    output.puts "\\makeatletter"
+    for ref in $used_references
+      output.puts "\\newlabel{#{ref}}#{references[ref]}"
+    end
+    output.puts "\\makeatother"    
+  end  
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
     line = ""
     if $flavor and not flavors.include?( flavor[label] )
-      line = line + (flavor[label].gsub(/\\ref{([^}]+)}/) { |label| exercise_numbers[Regexp.last_match[1]] }) + "\n"
+      line = line + flavor[label] + "\n"
       flavors << flavor[label]
     end
     line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{page_numbers[label]}}"
     line = line + exercises[label]
   end
+  
   output.puts line
+
 end
 
 unless $outputFilename
