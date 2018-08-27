@@ -58,11 +58,18 @@ $outputFilename = options.outputFilename
 exercises = {}
 flavor = {}
 page_numbers = {}
+section_numbers = {}
 exercise_numbers = {}
 references = {}
 
 for f in Dir.glob("#{$root}/**/*.aux") do
   for line in File.open(f).readlines
+    if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}{}{exercise.exercise.([0-9]*).([0-9]*)./ )
+      section_numbers[$1] = "#{$4}.#{$5}"
+      exercise_numbers[$1] = $2
+    end
+
+    
     if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}/ )
       page_numbers[$1] = $3
       exercise_numbers[$1] = $2
@@ -182,7 +189,7 @@ for line in File.open($filename).readlines
       line = line + flavor[label] + "\n"
       flavors << flavor[label]
     end
-    line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{page_numbers[label]}}"
+    line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{section_numbers[label]}}"
     line = line + exercises[label]
   end
   
