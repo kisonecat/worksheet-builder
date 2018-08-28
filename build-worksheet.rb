@@ -52,6 +52,9 @@ $solutions = options.solutions
 $flavor = options.flavor
 $outputFilename = options.outputFilename
 
+# BADBAD: force flavor text to appear for now
+$flavor = true
+
 ################################################################
 # load all exercises from files under $root
 
