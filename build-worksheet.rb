@@ -180,7 +180,9 @@ for line in File.open($filename).readlines
   if line.match(/\\begin{document}/)
     output.puts "\\makeatletter"
     for ref in $used_references
-      output.puts "\\newlabel{#{ref}}#{references[ref]}"
+      if references[ref]
+        output.puts "\\newlabel{#{ref}}#{references[ref]}"
+      end
     end
     output.puts "\\makeatother"    
   end  
