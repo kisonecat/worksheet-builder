@@ -83,6 +83,8 @@ for f in Dir.glob("#{$root}/**/*.aux") do
   end
 end
 
+# detect dupliates and give a warning!
+
 for f in Dir.glob("#{$root}/**/*.tex") do
   depth = 0
   solutioning = false
@@ -132,6 +134,9 @@ for f in Dir.glob("#{$root}/**/*.tex") do
     if line.match( /\\end *{exercise}/ )
       depth = depth - 1
       if depth == 0
+        if not exercises[label].nil?
+          puts "WARNING: the exercise #{label} appears more than once."
+        end
         exercises[label] = output.join("")
         flavor[label] = paragraph.join("")
         label = nil
