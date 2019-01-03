@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# MAKE IT ONLY GENERATE ONE VERSION
+
 ################################################################
 # read command line options
 require 'optparse'
@@ -95,11 +97,13 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   restart = false
   
   for line in File.open(f).readlines
+    line.gsub!( /%.*/, '' )
+    
     if line.match( /^[ ]*$/ )
       restart = true      
     end
     
-    if line.match( /\\begin *{exercise}/ )
+    if line.match( /\\begin *{exercise}/ ) or line.match( /\\begin *{computerExercise}/ )
       depth = depth + 1
       output = []
     end
@@ -131,11 +135,11 @@ for f in Dir.glob("#{$root}/**/*.tex") do
       solutioning = false
     end
     
-    if line.match( /\\end *{exercise}/ )
+    if line.match( /\\end *{exercise}/ ) or  line.match( /\\end *{computerExercise}/ )
       depth = depth - 1
       if depth == 0
         if not exercises[label].nil?
-          puts "WARNING: the exercise #{label} appears more than once."
+          puts "WARNING: in #{f} the exercise #{label} appears more than once."
         end
         exercises[label] = output.join("")
         flavor[label] = paragraph.join("")
@@ -173,6 +177,9 @@ end
 for line in File.open($filename).readlines
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
+    if (flavor[label].nil?)
+      puts "Error: Missing label #{label}"
+    end
     find_references(flavor[label])
   end
   find_references(exercises[label])
