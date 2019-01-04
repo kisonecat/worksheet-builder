@@ -100,11 +100,12 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   for line in File.open(f).readlines
     line.gsub!( /%.*/, '' )
 
-    next unless preamble == false
-    
     if line.match( /\\begin *{document}/ )
       preamble = false
+      next
     end
+
+    next unless preamble == false
     
     if line.match( /^[ ]*$/ )
       restart = true      
