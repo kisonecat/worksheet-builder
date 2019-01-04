@@ -95,19 +95,21 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   
   paragraph = []
   restart = false
+  preamble = true
   
   for line in File.open(f).readlines
     line.gsub!( /%.*/, '' )
+
+    next unless preamble == false
+    
+    if line.match( /\\begin *{document}/ )
+      preamble = false
+    end
     
     if line.match( /^[ ]*$/ )
       restart = true      
     end
 
-    if line.match( /\\begin *{document}/ )
-      restart = true
-      next
-    end
-    
     if line.match( /\\begin *{exercise}/ ) or line.match( /\\begin *{computerExercise}/ )
       depth = depth + 1
       output = []
