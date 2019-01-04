@@ -1,0 +1,43 @@
+\newcounter{exer}
+\newenvironment{exercise}{}{\vspace{4ex}}
+\renewenvironment{computerExercise}{\begin{exercise}\textsc{(matlab)} }{\end{exercise}}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{1ex}
+
+\newenvironment{solution}{}{}
+\newif\ifxake\xaketrue
+\input{/home/jim/linearAlgebra/laode/preamble.tex}
+\usepackage{xcolor}
+\renewenvironment{solution}{\color{blue}}{\color{black}}
+
+\usepackage{amsmath}
+
+\usepackage{environ}
+\NewEnviron{prompt}{}
+\NewEnviron{hint}{}
+\NewEnviron{multipleChoice}{}
+\NewEnviron{feedback}{}
+
+\renewcommand{\ans}{\noindent\textbf{Answer: }}
+\renewcommand{\soln}{\noindent\textbf{Solution: }}
+
+\newcommand{\answer}[2][]{#2}
+
+\graphicspath{/home/jim/linearAlgebra/laode}
+
+% if you want to hide solutions, uncomment the following
+%\usepackage{comment}\excludecomment{solution}
+
+\def\isitmatlab{}
+\newcommand{\matlab}{\def\isitmatlab{ (MATLAB)}}
+
+\makeatletter
+\newcommand{\exerciselabel}[2]{\textbf{\textsection #2, Exercise #1\isitmatlab.}\def\@currentlabel{#1}\def\isitmatlab{}}
+
+\renewcommand{\maketitle}{%
+  \begin{center}
+    \textbf{\@title} \\
+    Math 2568 \quad \@date
+  \end{center}
+  }
+\makeatother
