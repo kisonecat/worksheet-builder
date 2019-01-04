@@ -99,8 +99,13 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   for line in File.open(f).readlines
     line.gsub!( /%.*/, '' )
     
-    if line.match( /^[ ]*$/ ) or line.match( /\\begin *{document}/ )
+    if line.match( /^[ ]*$/ )
       restart = true      
+    end
+
+    if line.match( /\\begin *{document}/ )
+      restart = true
+      next
     end
     
     if line.match( /\\begin *{exercise}/ ) or line.match( /\\begin *{computerExercise}/ )
