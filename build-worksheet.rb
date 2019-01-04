@@ -38,7 +38,7 @@ class Parser
         args.flavor = true
       end      
 
-      opts.on("-oFILE", "--output=FILE", "Save output to file") do |filename|
+      opts.on("-oFILE", "--output=File", "Save output to file") do |filename|
         args.outputFilename = filename
       end      
     end
@@ -99,7 +99,7 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   for line in File.open(f).readlines
     line.gsub!( /%.*/, '' )
     
-    if line.match( /^[ ]*$/ )
+    if line.match( /^[ ]*$/ ) or line.match( /\\begin *{document}/ )
       restart = true      
     end
     
