@@ -195,15 +195,19 @@ for line in File.open($filename).readlines
 end
 
 def remove_exercise_reference(t)
-  t.gsub!( /In [eE]xercises[ ~]\\ref{([^}]*)} -- \\ref{([^}]*)},? /, '')
+  return t if not t.match(/[a-z]/)
+  t = t.split("\n\n").join("\\par ")
+  t = t.split("\n").join(" ")
+  t.gsub!( /In (each of )?[eE]xercises[ ~]\\ref{([^}]*)} ?-- ?\\ref{([^}]*)},? ?/, '')
+  t.gsub!( /in [eE]xercises[ ~]\\ref{([^}]*)} ?-- ?\\ref{([^}]*)},? ?/, '')
   if t.match(/^\\noindent /)
     t.gsub!(/^\\noindent /, '')
     t = t[0..0].upcase + t[1..-1]
     t = "\\noindent " + t
   else
-    t.capitalize!
+    t = t[0..0].upcase + t[1..-1]
   end
-  
+  t.gsub!( "\\par ", "\n\n" )
   return t
 end
 
@@ -223,10 +227,15 @@ for line in File.open($filename).readlines
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
-    line = "\n\\problemlabel\n\n"
+    if exercises[label].match(/computerExercise/)
+      line = "\n\\matlabproblemlabel\n\n"
+    else
+      line = "\n\\problemlabel\n\n"
+    end
+    
     if $flavor and not flavors.include?( flavor[label] )
       text = remove_exercise_reference(flavor[label])
-      line = line + text + "\n"
+      line = line + text + "\n\n"
       flavors << text
     end
     line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{section_numbers[label]}}"
