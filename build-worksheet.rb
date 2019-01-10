@@ -195,7 +195,7 @@ for line in File.open($filename).readlines
 end
 
 def remove_exercise_reference(t)
-  t.gsub!( /In [eE]xercises[ ~]\\ref{([^}]*)} -- \\ref{([^}]*)} /, '')
+  t.gsub!( /In [eE]xercises[ ~]\\ref{([^}]*)} -- \\ref{([^}]*)},? /, '')
   if t.match(/^\\noindent /)
     t.gsub!(/^\\noindent /, '')
     t = t[0..0].upcase + t[1..-1]
