@@ -98,7 +98,8 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   preamble = true
   
   for line in File.open(f).readlines
-    line.gsub!( /%.*/, '' )
+    # this isn't safe because of \%
+    # line.gsub!( /%.*/, '' )
 
     if line.match( /\\begin *{document}/ )
       preamble = false
@@ -222,7 +223,7 @@ for line in File.open($filename).readlines
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
-    line = "\\problemlabel\n\n"
+    line = "\n\\problemlabel\n\n"
     if $flavor and not flavors.include?( flavor[label] )
       text = remove_exercise_reference(flavor[label])
       line = line + text + "\n"
