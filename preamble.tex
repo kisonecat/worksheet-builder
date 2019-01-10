@@ -34,6 +34,9 @@
 \makeatletter
 \newcommand{\exerciselabel}[2]{\textbf{\textsection #2, Exercise #1\isitmatlab.}\def\@currentlabel{#1}\def\isitmatlab{}}
 
+\newcounter{problem}
+\newcommand{\problemlabel}{\refstepcounter{problem}\section*{Problem \arabic{problem}}}
+
 \renewcommand{\maketitle}{%
   \begin{center}
     \textbf{\@title} \\

@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-# MAKE IT ONLY GENERATE ONE VERSION
-
 ################################################################
 # read command line options
 require 'optparse'
@@ -209,7 +207,7 @@ for line in File.open($filename).readlines
   
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
-    line = ""
+    line = "\\problemlabel\n\n"
     if $flavor and not flavors.include?( flavor[label] )
       line = line + flavor[label] + "\n"
       flavors << flavor[label]
