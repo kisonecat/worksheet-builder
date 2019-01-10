@@ -64,18 +64,20 @@ page_numbers = {}
 section_numbers = {}
 exercise_numbers = {}
 references = {}
+exercise_order = []
 
 for f in Dir.glob("#{$root}/**/*.aux") do
   for line in File.open(f).readlines
     if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}{}{exercise.exercise.([0-9]*).([0-9]*)./ )
       section_numbers[$1] = "#{$4}.#{$5}"
       exercise_numbers[$1] = $2
+      exercise_order << $1
     end
-
     
     if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}/ )
       page_numbers[$1] = $3
       exercise_numbers[$1] = $2
+      exercise_order << $1      
     end
     if line.match( /newlabel{([^}]*)}{({[0-9.]*}{[0-9.]*})/ )
       references[$1] = "{#{$2}}"
@@ -191,6 +193,19 @@ for line in File.open($filename).readlines
   find_references(exercises[label])
 end
 
+def remove_exercise_reference(t)
+  t.gsub!( /In Exercises[ ~]\\ref{([^}]*)} -- \\ref{([^}]*)} /, '')
+  if t.match(/^\\noindent /)
+    t.gsub!(/^\\noindent /, '')
+    t.capitalize!
+    t = "\\noindent " + t
+  else
+    t.capitalize!
+  end
+  
+  return t
+end
+
 flavors = []
 for line in File.open($filename).readlines
   # line.gsub!( /%.*/, '' )
@@ -209,8 +224,9 @@ for line in File.open($filename).readlines
     label = $1
     line = "\\problemlabel\n\n"
     if $flavor and not flavors.include?( flavor[label] )
-      line = line + flavor[label] + "\n"
-      flavors << flavor[label]
+      text = remove_exercise_reference(flavor[label])
+      line = line + text + "\n"
+      flavors << text
     end
     line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{section_numbers[label]}}"
     line = line + exercises[label]
