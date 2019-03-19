@@ -148,7 +148,6 @@ end
 # filter the latex file and run pdflatex
 
 previousFilename = paths[$label]
-puts previousFilename
 
 pn = Pathname.new(previousFilename)
 previousNumber = pn.basename.to_s.gsub( /[^0-9]/, '' ).to_i
@@ -171,5 +170,5 @@ if File.exist?( thisFilename )
 else
   FileUtils.cp( $root.join( 'howToContribute' ).join( 'template.tex' ),
                 thisFilename )
-  `open ${thisFilename}`
+  `open #{thisFilename}`
 end
