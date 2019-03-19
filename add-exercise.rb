@@ -157,7 +157,7 @@ previousIndex = allFilenames.index(previousFilename)
 nextIndex = previousIndex + 1
 thisNumber = false
 if (nextIndex < allFilenames.length)
-  nextNumber = allFilenames[nextIndex].to_s.gsub( /[^0-9]/, '' ).to_i
+  nextNumber = Pathname.new(allFilenames[nextIndex]).basename.to_s.gsub( /[^0-9]/, '' ).to_i
   thisNumber = (previousNumber + nextNumber) / 2
 else
   thisNumber = previousNumber + 100
@@ -172,6 +172,7 @@ else
                 thisFilename )
 
   editor = fork do
+    puts "Opening #{thisFilename}"
     exec "open #{thisFilename}"
   end
   Process.detach(editor)
