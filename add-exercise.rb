@@ -175,6 +175,6 @@ else
     exec "open #{thisFilename}"
   end
   Process.detach(editor)
-
+  sleep 1
   FileUtils.rm( thisFilename )
 end
