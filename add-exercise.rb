@@ -170,5 +170,11 @@ if File.exist?( thisFilename )
 else
   FileUtils.cp( $root.join( 'howToContribute' ).join( 'template.tex' ),
                 thisFilename )
-  `open #{thisFilename}`
+
+  editor = fork do
+    exec "open #{thisFilename}"
+  end
+  Process.detach(editor)
+
+  FileUtils.rm( thisFilename )
 end
