@@ -198,6 +198,8 @@ def remove_exercise_reference(t)
   return t if not t.match(/[a-z]/)
   t = t.split("\n\n").join("\\par ")
   t = t.split("\n").join(" ")
+  # sometimes this deletes something in the MIDDLE of a line, which
+  # the capitalization code below doesn't fix
   t.gsub!( /In (each of )?[eE]xercises[ ~]\\ref{([^}]*)} ?-- ?\\ref{([^}]*)},? ?/, '')
   t.gsub!( /in [eE]xercises[ ~]\\ref{([^}]*)} ?-- ?\\ref{([^}]*)},? ?/, '')
   if t.match(/^\\noindent /)
@@ -240,6 +242,8 @@ for line in File.open($filename).readlines
     end
     line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{section_numbers[label]}}"
     line = line + exercises[label]
+
+    line = line + "\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n"
   end
   
   output.puts line
