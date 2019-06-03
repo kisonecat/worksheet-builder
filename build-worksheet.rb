@@ -67,6 +67,8 @@ references = {}
 exercise_order = []
 
 for f in Dir.glob("#{$root}/**/*.aux") do
+  next unless File.exist?(f)
+  
   for line in File.open(f).readlines
     if line.match( /newlabel{([^}]*)}{{([0-9]*)}{([0-9]*)}{}{exercise.exercise.([0-9]*).([0-9]*)./ )
       section_numbers[$1] = "#{$4}.#{$5}"
@@ -96,6 +98,8 @@ for f in Dir.glob("#{$root}/**/*.tex") do
   paragraph = []
   restart = false
   preamble = true
+
+  next unless File.exist?(f)
   
   for line in File.open(f).readlines
     # this isn't safe because of \%
