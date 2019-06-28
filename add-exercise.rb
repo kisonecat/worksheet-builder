@@ -168,7 +168,7 @@ if File.exist?( thisFilename )
   puts "ERROR: The file ${thisFilename} already exists."
   exit
 else
-  FileUtils.cp( $root.join( 'howToContribute' ).join( 'template.tex' ),
+  FileUtils.cp( $root.join( 'GUIDES' ).join( 'template.tex' ),
                 thisFilename )
 
   editor = fork do
