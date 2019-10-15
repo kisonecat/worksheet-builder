@@ -5,8 +5,7 @@
 
 \newenvironment{solution}{}{}
 \newif\ifxake\xaketrue
-% \input{\string~/linear-algebra/laode/preamble.tex}
-\input{\string~/linearAlgebra/laode/preamble.tex}
+\input{\string~/linear-algebra/laode/preamble.tex}
 \usepackage{xcolor}
 \renewenvironment{solution}{\color{blue}}{\color{black}}
 \renewenvironment{computerExercise}{\begin{exercise}}{\end{exercise}}
@@ -48,7 +47,7 @@
   }
 \makeatother
 
-\renewenvironment{matlabEquation}{\renewcommand{\label}[1]{\tag{\ref{#1}}}\begin{equation}}{\end{equation}}
+\renewenvironment{matlabEquation}{\begin{equation}\renewcommand{\label}[1]{\tag{\ref{##1}}}}{\end{equation}}
 
 \usepackage{zref-xr}
 \zxrsetup{tozreflabel=false, toltxlabel=true, verbose}
