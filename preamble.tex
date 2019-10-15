@@ -5,7 +5,7 @@
 
 \newenvironment{solution}{}{}
 \newif\ifxake\xaketrue
-\input{\string~/linear-algebra/laode/preamble.tex}
+ \input{\string~/linear-algebra/laode/preamble.tex}
 \usepackage{xcolor}
 \renewenvironment{solution}{\color{blue}}{\color{black}}
 \renewenvironment{computerExercise}{\begin{exercise}}{\end{exercise}}
@@ -46,3 +46,11 @@
   \end{center}
   }
 \makeatother
+
+\renewenvironment{matlabEquation}%
+{\let\oldtheequation\theequation\renewcommand{\theequation}{\oldtheequation*}\renewcommand{\label}[1]{\tag{\ref{#1}}}\begin{equation}}%
+  {\end{equation}\let\theequation\oldtheequation}
+
+\usepackage{zref-xr}
+\zxrsetup{tozreflabel=false, toltxlabel=true, verbose}
+\zexternaldocument*{/Users/golubitsky.4/linear-algebra/laode/linearAlgebra}
