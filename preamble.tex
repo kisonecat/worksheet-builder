@@ -47,7 +47,12 @@
   }
 \makeatother
 
-\renewenvironment{matlabEquation}{\begin{equation}\renewcommand{\label}[1]{\tag{\ref{##1}}}}{\end{equation}}
+%\renewenvironment{matlabEquation}{\begin{equation}\renewcommand{\label}[1]{\tag{\ref{##1}}}}{\end{equation}}
+
+\let\oldequation\equation
+\let\oldendequation\endequation
+\def\equation{\begingroup\oldequation\renewcommand{\label}[1]{\tag{\ref{##1}}}}
+\def\endequation{\oldendequation \endgroup}
 
 \usepackage{zref-xr}
 \zxrsetup{tozreflabel=false, toltxlabel=true, verbose}
