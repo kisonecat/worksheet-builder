@@ -241,7 +241,8 @@ for line in File.open($filename).readlines
     end
     
     if $flavor and not flavors.include?( flavor[label] )
-      text = remove_exercise_reference(flavor[label])
+      #text = remove_exercise_reference(flavor[label])
+      text = flavor[label]
       unless already_flavored.any?{ |x| x == text }
         already_flavored << text
         line = line + text + "\n\n"
