@@ -218,6 +218,7 @@ def remove_exercise_reference(t)
 end
 
 flavors = []
+already_flavored = []
 for line in File.open($filename).readlines
   # line.gsub!( /%.*/, '' )
 
@@ -241,8 +242,11 @@ for line in File.open($filename).readlines
     
     if $flavor and not flavors.include?( flavor[label] )
       text = remove_exercise_reference(flavor[label])
-      line = line + text + "\n\n"
-      flavors << text
+      unless already_flavored.any?{ |x| x == text }
+        already_flavored << text
+        line = line + text + "\n\n"
+        flavors << text
+      end
     end
     line = line + "\\exerciselabel{#{exercise_numbers[label]}}{#{section_numbers[label]}}"
     line = line + exercises[label]
