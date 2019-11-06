@@ -7,10 +7,6 @@ other=${*%${!#}} # all parameters except the last
 exercises=`echo $last|sed 's/.tex$/e.tex/'`
 solutions=`echo $last|sed 's/.tex$/s.tex/'`
 
-ruby $DIR/build-worksheet.rb $other $last --output $exercises
-pdflatex $exercises
-pdflatex $exercises
+ruby $DIR/build-worksheet.rb $other $last --output $exercises && pdflatex $exercises && pdflatex $exercises
 
-ruby $DIR/build-worksheet.rb $other $last --solutions --output $solutions
-pdflatex $solutions
-pdflatex $solutions
+ruby $DIR/build-worksheet.rb $other $last --solutions --output $solutions && pdflatex $solutions && pdflatex $solutions
