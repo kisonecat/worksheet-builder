@@ -192,11 +192,11 @@ for line in File.open($filename).readlines
     label = $1
     if (flavor[label].nil?)
       puts
-      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-      puts "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR"
-      puts "    Missing label #{label}"
-      puts "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR"      
-      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      puts "\033[5m!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\033[0m"
+      puts "\033[31mERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR\033[0m"
+      puts "\033[1m    Missing label #{label}\033[0m"
+      puts "\033[31mERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR\033[0m"
+      puts "\033[5m!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\033[0m"
       throw "Error: Missing label #{label}"
     end
     find_references(flavor[label])
