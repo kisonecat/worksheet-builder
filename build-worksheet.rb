@@ -191,6 +191,12 @@ for line in File.open($filename).readlines
   if line.match(/\\exercise{([^}]+)}/)
     label = $1
     if (flavor[label].nil?)
+      puts
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      puts "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR"
+      puts "    Missing label #{label}"
+      puts "ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR"      
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       throw "Error: Missing label #{label}"
     end
     find_references(flavor[label])
