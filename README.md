@@ -74,13 +74,18 @@ The expected result is a file called `output.tex` with the `\exercise`s replaced
 
 ## A Ready Example for Linear Algebra
 
-For Golubitsky's Linear Algebra text, a example called `homework-sample.tex` is provided, along with scripts to make the process easy.  Open a terminal in the ``worksheet-builder`` directory.  Assuming that the source for the linear algebra text is in the relative directory ``../laode``, you may check your installation and compile the sample by running the command
+For the Linear Algebra text by Golubitsky and Dellnitz, a example called `homework-sample.tex` is provided, along with scripts to make the process easy.  Open a terminal in the ``worksheet-builder`` directory.  Assuming that the source for the linear algebra text is in the relative directory ``../laode``, you may check your installation by compiling this sample.  Run the command
 ```
 ./script_both.sh homework-sample.tex
 ``` 
 Four notable files are produced:
 
-`homework-samplee.tex` and `homework-samplee.pdf`, the source and pdf for the homework exercieses. 
+`homework-samplee.tex` and `homework-samplee.pdf`, the source and pdf for the homework exercises. 
 
 `homework-samples.tex` and `homework-samples.pdf`, the source and pdf for the homework exercises with solutions. 
 
+Use this example as a template, create your own source files, e.g. `homework1.tex`, and compile with the command 
+```
+./script_both.sh homework1.tex
+``` 
+Again four notable files will be produced, following the same naming conventions as above. 
