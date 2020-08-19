@@ -5,7 +5,7 @@
 
 \newenvironment{solution}{}{}
 \newif\ifxake\xaketrue
-\input{\string~/linear-algebra/laode/preamble.tex}
+\input{../laode/preamble.tex}
 \usepackage{xcolor}
 \renewenvironment{solution}{\color{blue}}{\color{black}}
 \renewenvironment{computerExercise}{\begin{exercise}}{\end{exercise}}
@@ -23,7 +23,11 @@
 
 \newcommand{\answer}[2][]{#2}
 
-%\graphicspath{\string~/linear-algebra/laode}
+\graphicspath{
+  {./}
+  {../laode/}
+}
+
 
 % if you want to hide solutions, uncomment the following
 %\usepackage{comment}\excludecomment{solution}
@@ -54,6 +58,6 @@
 \def\equation{\begingroup\oldequation\renewcommand{\label}[1]{\tag{\ref{##1}}}}
 \def\endequation{\oldendequation \endgroup}
 
-\usepackage{zref-xr}
-\zxrsetup{tozreflabel=false, toltxlabel=true, verbose}
-\zexternaldocument*{/Users/golubitsky.4/linear-algebra/laode/linearAlgebra}
+%\usepackage{zref-xr}
+%\zxrsetup{tozreflabel=false, toltxlabel=true, verbose}
+%\zexternaldocument*{/Users/golubitsky.4/linear-algebra/laode/linearAlgebra}
